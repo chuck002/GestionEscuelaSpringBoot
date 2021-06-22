@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang=”es” xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="templates::general_head">
+</head>
+
+<body>
+	<header th:replace="templates_student::general_header_student"></header>
+<div class="container">
+<table th:replace="templates_student::student_programa">
+</table>
+</div>
+	<div th:replace="templates::general_scripts"></div>
+
+	<footer th:replace="templates::general_footer"></footer>
+</body>
+
+</html>

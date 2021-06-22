@@ -1,0 +1,95 @@
+<header th:fragment="general_header_student">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand">Gestion Estudiantes</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="/student/mostrar">Datos del Alumno</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="/student/mostrar_materias">Cursos Posibles</a>
+						</li>
+					</ul>
+					<form class="d-flex" th:action="@{/logout}">
+					<button class="btn btn-outline-success" type="submit">Cerrar Sesion</button>
+				</form>
+				</div>
+			</div>
+		</nav>
+	</header>
+	
+	<!-- Form de mostrar Datos Alumnos -->
+	<div th:fragment="student_mostrar" class="container">
+	<label th:text="'Nombre: '+${user.name}"></label><br>
+	<label th:text="'Apellido: '+${user.last_name}"></label><br>
+	<label th:text="'Legajo Nº: '+${user.username_user}"></label><br>
+	<label>Materias a las que se inscribio</label>
+	<table class="table table-bordered table-sm">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>ASIGNATURA</td>
+				<td>HORARIO</td>
+				<td>PROFESOR</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="course : ${user.courses}">
+				<td th:text="${course.id}"></td>
+				<td th:text="${course.name_course}"></td>
+				<td th:text="${course.schedule_course}"></td>
+				<td th:text="${course.teacher.name}+' '+${course.teacher.last_name}"></td>
+		</tbody>
+	</table>
+	
+		
+	</div>
+	
+	<!-- Form de mostrar Datos Materias -->
+	<div th:fragment="student_materias" class="container">
+	<table class="table table-bordered table-sm">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>ASIGNATURA</td>
+				<td>HORARIO</td>
+				<td>PROFESOR</td>
+				<td>CUPOS DISPONIBLES</td>
+				<td>VER PROGRAMA</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="course : ${courses}">
+				<td th:text="${course.id}"></td>
+				<td th:text="${course.name_course}"></td>
+				<td th:text="${course.schedule_course}"></td>
+				<td th:text="${course.teacher.name}+' '+${course.teacher.last_name}"></td>
+				<td th:text="${course.max_student}"></td>
+				<td><a th:href="@{/student/mostrar_materia/{id}(id=${course.id})}" class="btn btn-warning">
+					Programa de la Asignatura
+				</a></td>
+		</tbody>
+	</table>
+		
+	</div>
+	
+	<!-- Programa de materia -->
+	<div th:fragment="student_programa" class="container">
+	<h2 th:text="${course.name_course}"></h2>
+	<p th:text="${course.features}"></p>
+	<p th:if="${esta} == true"><a th:href="@{/student/mostrar}" class="btn btn-success">Volver</a><span>Ya se encuentra inscripto en esta materia.</span></p>
+	<p th:if="${esta} == false"><a th:href="@{/student/inscribir_materia/{id} (id=${course.id})}" class="btn btn-success">Incribirse</a><a th:href="@{/student/mostrar}" class="btn btn-success">Volver</a></p>
+	</div>
+	
+	<!-- Materia Completa -->
+	<div th:fragment="student_materia_completa" class="container">
+	<h2 th:text="${course.name_course}"></h2>
+	<p th:text="${course.features}"></p>
+	<h1><a th:href="@{/student/mostrar_materias}" class="btn btn-danger">Volver</a><span>La materia se encuentra completa.</span></h1>
+		</div>

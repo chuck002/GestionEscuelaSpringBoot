@@ -1,0 +1,314 @@
+<header th:fragment="general_header_administrator">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand">Gestion Administrador</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/admin/teacher/listar">Profesores</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" href="/admin/course/listar" tabindex="-1"
+							aria-disabled="true">Materias</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/admin/student/listar">Alumnos</a>
+					</li>
+				</ul>
+				<form class="d-flex" th:action="@{/logout}">
+					<button class="btn btn-outline-success" type="submit">Cerrar Sesion</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+</header>
+
+
+<!--Tabla de Profesores -->
+<table th:fragment="teachers_list" class="table table-bordered table-sm">
+	<thead>
+		<tr>
+			<td>ID</td>
+			<td>NOMBRE</td>
+			<td>APELLIDO</td>
+			<td>DNI</td>
+			<td>ACTIVO</td>
+			<td>EDITAR</td>
+			<td>ELIMINAR</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr th:each="teacher : ${teachers}">
+			<td th:text="${teacher.id}"></td>
+			<td th:text="${teacher.name}"></td>
+			<td th:text="${teacher.last_name}"></td>
+			<td th:text="${teacher.dni}"></td>
+			<td th:text="${teacher.enabled}"></td>
+			<td><a th:href="@{/admin/teacher/editar/{id}(id=${teacher.id})}" class="btn btn-warning">
+					Editar
+				</a></td>
+			<td><a th:href="@{/admin/teacher/delete/{id}(id=${teacher.id})}" class='btn btn-danger'>Eliminar</button>
+			</td>
+		</tr>
+		<tr><a th:href="@{/admin/teacher/add}" class="btn btn-success">Agregar Profesor</a></tr>
+	</tbody>
+</table>
+
+<!-- Form de Actualizar Profesor -->
+<form th:fragment="teacher_update" th:action="@{/admin/teacher/update/{id}(id=${teacher.id})}" th:object="${teacher}"
+	method="post">
+	<div class="form-group">
+		<label for="nombre">Nombre</label>
+		<input type="text" th:field="*{name}" value="${teacher.name}" class="form-control">
+		<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="apellido">Apellido</label>
+			<input type="text" th:field="*{last_name}" value="${teacher.last_name}" class="form-control">
+			<span th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="dni">DNI</label>
+			<input type="text" th:field="*{dni}" value="${teacher.dni}" class="form-control">
+			<span th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></span>
+		</div>
+		<div class="form-group">
+			<label for="activo">Activo</label>
+			<input type="text" th:field="*{enabled}" value="${teacher.enabled}" class="form-control">
+		</div>
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/teacher/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Modificar Datos</button>
+	</form>
+	
+	<!-- Form de Cargar Profesor -->
+	<form th:fragment="teacher_add" th:action="@{/admin/teacher/addTeacher}" th:object="${teacher}" method="post">
+		<div class="form-group">
+			<label for="nombre">Nombre</label>
+			<input type="text" th:field="*{name}" value="${teacher.name}" class="form-control">
+			<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="apellido">Apellido</label>
+			<input type="text" th:field="*{last_name}" value="${teacher.last_name}" class="form-control">
+			<span th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="dni">DNI</label>
+			<input type="text" th:field="*{dni}" value="${teacher.dni}" class="form-control">
+			<span th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></span>
+		</div>
+		<div class="form-group">
+			<label for="activo">Activo</label>
+			<input type="text" th:field="*{enabled}" value="${teacher.enabled}" class="form-control">
+		</div>
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/teacher/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Agregar Datos</button>
+	</form>
+
+
+
+	<!--Tabla de Cursos -->
+	<table th:fragment="courses_list" class="table table-bordered table-sm">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>ASIGNATURA</td>
+				<td>HORARIO</td>
+				<td>PROFESOR</td>
+				<td>CAPACIDAD MAXIMA</td>
+				<td>EDITAR</td>
+				<td>ELIMINAR</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="course : ${courses}">
+				<td th:text="${course.id}"></td>
+				<td th:text="${course.name_course}"></td>
+				<td th:text="${course.schedule_course}"></td>
+				<td th:text="${course.teacher.name}+' '+${course.teacher.last_name}"></td>
+				<td th:text="${course.max_student}"></td>
+				<td><a th:href="@{/admin/course/editar/{id}(id=${course.id})}" class="btn btn-warning">
+					Editar
+				</a></td>
+			<td><a th:href="@{/admin/course/delete/{id}(id=${course.id})}" class='btn btn-danger'>Eliminar</button>
+			</td>
+		</tr>
+		<tr><a th:href="@{/admin/course/add}" class="btn btn-success">Agregar Curso</a></tr>
+		</tbody>
+	</table>
+	
+	<!-- Form de Actualizar Curso -->
+<form th:fragment="course_update" th:action="@{/admin/course/update/{id}(id=${course.id})}" th:object="${course}"
+	method="post">
+	<div class="form-group">
+			<label for="nombre">Nombre del curso</label>
+			<input type="text" th:field="*{name_course}" value="${course.name_course}" class="form-control">
+			<span th:if="${#fields.hasErrors('name_course')}" th:errors="*{name_course}"></span>
+		</div>
+		<div class="form-group">
+			<label for="Horario">Horario</label>
+			<input type="text" th:field="*{schedule_course}" value="${course.schedule_course}" class="form-control">
+			<span th:if="${#fields.hasErrors('schedule_course')}" th:errors="*{schedule_course}"></span>
+		</div>
+		<div class="form-group">
+			<label for="students">Numero de Estudiantes</label>
+			<input type="text" th:field="*{max_student}" value="${course.max_student}" class="form-control">
+			<span th:if="${#fields.hasErrors('max_student')}" th:errors="*{max_student}"></span>
+		</div>
+		<div class="form-group">
+			<label for="profesor">Caracteristicas</label>
+			<textarea th:field="*{features}" value="${course.features}" class="form-control"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="profesor">Profesor</label>
+			<input type="text" th:field="*{teacher}" value="${course.teacher}" class="form-control">
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/course/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Modificar Datos</button>
+	</form>
+	
+	<!-- Form de Cargar Curso -->
+	<form th:fragment="course_add" th:action="@{/admin/course/addCourse}" th:object="${course}" method="post">
+		<div class="form-group">
+			<label for="nombre">Nombre del curso</label>
+			<input type="text" th:field="*{name_course}" value="${course.name_course}" class="form-control">
+			<span th:if="${#fields.hasErrors('name_course')}" th:errors="*{name_course}"></span>
+		</div>
+		<div class="form-group">
+			<label for="Horario">Horario</label>
+			 <select name="schedule_course">
+            <option th:each="horario : ${horarios}"
+              th:value="${horario}" 
+              th:text="${horario}"
+              th:selected="false"
+              />
+          </select>
+			<span th:if="${#fields.hasErrors('schedule_course')}" th:errors="*{schedule_course}"></span>
+		</div>
+		<div class="form-group">
+			<label for="students">Numero de Estudiantes</label>
+			<input type="text" th:field="*{max_student}" value="${course.max_student}" class="form-control">
+			<span th:if="${#fields.hasErrors('max_student')}" th:errors="*{max_student}"></span>
+		</div>
+		<div class="form-group">
+			<label for="profesor">Caracteristicas</label>
+			<textarea th:field="*{features}" value="${course.features}" class="form-control"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="profesor">Profesor</label>
+			<select name="teacher">
+            <option th:each="teacher : ${teachers}"
+              th:value="${teacher.id}"
+              th:text="${teacher.id}+' - '+${teacher.name}+' '+${teacher.last_name}"
+              th:selected="false"
+              />
+          </select>
+		</div>
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/course/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Agregar Datos</button>
+	</form>
+	
+	
+<!--Tabla de Alumnos -->
+<table th:fragment="student_list" class="table table-bordered table-sm">
+	<thead>
+		<tr>
+			<td>ID</td>
+			<td>NOMBRE</td>
+			<td>APELLIDO</td>
+			<td>USUARIO</td>
+			<td>ACTIVO</td>
+			<td>EDITAR</td>
+			<td>ELIMINAR</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.id}"></td>
+			<td th:text="${user.name}"></td>
+			<td th:text="${user.last_name}"></td>
+			<td th:text="${user.username_user}"></td>
+			<td th:text="${user.enabled}"></td>
+			<td><a th:href="@{/admin/student/editar/{id}(id=${user.id})}" class="btn btn-warning">
+					Editar
+				</a></td>
+			<td><a th:href="@{/admin/student/delete/{id}(id=${user.id})}" class='btn btn-danger'>Eliminar</button>
+			</td>
+		</tr>
+		<tr><a th:href="@{/admin/student/add}" class="btn btn-success">Agregar Alumno</a></tr>
+	</tbody>
+</table>
+
+<!-- Form de Actualizar Alumno -->
+<form th:fragment="student_update" th:action="@{/admin/student/update/{id}(id=${user.id})}" th:object="${user}"
+	method="post">
+	<div class="form-group">
+		<label for="nombre">Nombre</label>
+		<input type="text" th:field="*{name}" value="${user.name}" class="form-control">
+		<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="apellido">Apellido</label>
+			<input type="text" th:field="*{last_name}" value="${user.last_name}" class="form-control">
+			<span th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="username">Nombre de Usuario (Legajo)</label>
+			<input type="text" th:field="*{username_user}" value="${user.username_user}" class="form-control">
+			<span th:if="${#fields.hasErrors('username_user')}" th:errors="*{username_user}"></span>
+		</div>
+		<div class="form-group">
+			<label for="activo">Activo</label>
+			<input type="text" th:field="*{enabled}" value="${user.enabled}" class="form-control">
+			<input type="hidden" th:field="*{password_user}" value="${user.password_user}">
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/student/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Modificar Datos</button>
+		</div>
+	</form>
+	
+	<!-- Form de Cargar Alumnos -->
+	<form th:fragment="student_add" th:action="@{/admin/student/addStudent}" th:object="${user}"
+	method="post">
+	<div class="form-group">
+		<label for="nombre">Nombre</label>
+		<input type="text" th:field="*{name}" value="${user.name}" class="form-control">
+		<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="apellido">Apellido</label>
+			<input type="text" th:field="*{last_name}" value="${user.last_name}" class="form-control">
+			<span th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></span>
+		</div>
+		<div class="form-group">
+			<label for="dni">Nombre de Usuario (Legajo)</label>
+			<input type="text" th:field="*{username_user}" value="${user.username_user}" class="form-control">
+			<span th:if="${#fields.hasErrors('username_user')}" th:errors="*{username_user}"></span>
+		</div>
+		<div class="form-group">
+			<label for="dni">Contraseña (DNI)</label>
+			<input type="text" th:field="*{password_user}" value="${user.password_user}" class="form-control">
+			<span th:if="${#fields.hasErrors('password_user')}" th:errors="*{password_user}"></span>
+		</div>
+		<div class="form-group">
+			<label for="activo">Activo (1) - No Activo (0)</label>
+			<input type="text" th:field="*{enabled}" value="1" class="form-control" placeholder="1">
+		</div>
+		<div class="modal-footer">
+			<a th:href="@{/admin/student/listar}" class="btn btn-secondary">Volver</a>
+			<button type="submit" class="btn btn-primary">Cargar Datos</button>
+		</div>
+	</form>
